@@ -11,7 +11,16 @@ class Maestros {
 }
 //Array Maestros
 const maestros = [
-    new Maestros(001, "Paulo", "Londra", "Musica", "1", "1")
+    new Maestros(1, "Pablo", "Picasso", "Artistica", "pablo@gmail.com", "123456"),
+    new Maestros(2, "Charles", "Darwin", "Biologia", "charles@gmail.com", "123456"),
+    new Maestros(3, "Lionel", "Scaloni", "Educacion Fisica", "lionel@gmail.com", "123456"),
+    new Maestros(4, "Cristobal", "Colon", "Geografia", "cristobal@gmail.com", "123456"),
+    new Maestros(5, "Rick", "Harrison", "Historia", "rick@gmail.com", "123456"),
+    new Maestros(6, "Emma", "Watson", "Ingles", "emma@gmail.com", "123456"),
+    new Maestros(7, "William", "Shakespeare", "Lengua y Literatura", "willy@gmail.com", "123456"),
+    new Maestros(8, "Albert", "Einstein", "Matematica", "albert@gmail.com", "123456"),
+    new Maestros(9, "Paulo", "Londra", "Musica", "paulo@gmail.com", "123456"),
+    new Maestros(9, "Florencia", "Hendel", "Programacion", "flor@gmail.com", "123456"),
 ]
 //Clase constructora de Trimestres
 class Trimestres {
@@ -31,7 +40,8 @@ class Materias {
             new Trimestres("2do Trimestre", "Sin Nota", "Sin Nota", "Sin Nota"),
             new Trimestres("3er Trimestre", "Sin Nota", "Sin Nota", "Sin Nota")
         ];
-        this.stateMat = "Sin datos suficientes"
+        this.stateMat = "Sin datos suficientes";
+        this.promFinal = "Sin Terminar la cursada";
     }
 }
 //Clase constructora de Alumnos
@@ -57,14 +67,14 @@ class Alumno {
     }
 }
 //Array con nombre de las materias
-const materiasName = ["Artistica", "Biologia", "Eduacion Fisica", "Geografia", "Historia", "Ingles", "Leguna y Literatura", "Matematicas", "Musica", "Programacion"]
+const materiasName = ["Artistica", "Biologia", "Educacion Fisica", "Geografia", "Historia", "Ingles", "Lengua y Literatura", "Matematica", "Musica", "Programacion"]
 //Array de alumnos
 const alumnos = [
     new Alumno(001, "Lucas", "Messi", "1", "1"),
     new Alumno(002, "Ana", "Pereira", "ana@gmail.com", "ana"),
     new Alumno(003, "Kevin", "Plucci", "kevin@gmail.com", "kevin"),
     new Alumno(004, "Lucas", "Velazquez", "lucas@gmail.com", "lucas"),
-    new Alumno(005, "Mai", "Merles", "mai@gmail.com", "mai"),
+    new Alumno(005, "Alan", "Juarez", "alan@gmail.com", "alan"),
 ]
 
 //Llama al elemento contain
@@ -123,7 +133,7 @@ function outAlert() {
 function showDateMaster(persona) {
     let alumnos = getAlumnos();
     contain.innerHTML = `
-    <h1>Bienvenido Maestro ${persona.name}</h1>
+    <h1>Bienvenido Maestro ${persona.name} ${persona.apellido}</h1>
             <div class="mb-3">
                 <div class="row">
                     ${alumnos}
@@ -197,7 +207,7 @@ function getBtnVerAlu(maestro) {
             let arrayClasname = btn.className.split(" ");
             let index = parseInt(arrayClasname[3]);
             const alumnoFind = alumnos.find((alumno) => alumno.id === index)
-            showNotesAlumno(alumnoFind, maestro);
+            showNotesAlumno(alumnoFind, maestro.materia, showDateMaster, maestro);
         }
     })
 }
@@ -248,6 +258,7 @@ function editAlum(alumno, maestro) {
                 alert("No eligio ningun trimestre");
                 console.log("no funco")
         }
+        estadoMat(materia.trimestres, materia);
     }
     //evento para volver a la interfaz anterior
     const btnReturn = document.getElementById("btnReturn");
@@ -270,14 +281,31 @@ function setTrim(trimestre) {
         alert("Verifique haber puesto bien las notas");
     }
 }
+//Funcion para ver estado de la materia
+// si saca 6 o mas esta aprobado.Si saca menos esta desaprobado . Si todos los trimestres no tienen sus notas y promedios no hay promedio final
+function estadoMat(trimestres, materia) {
+    let promedio1 = parseInt(trimestres[0].promedio);
+    let promedio2 = parseInt(trimestres[1].promedio);
+    let promedio3 = parseInt(trimestres[2].promedio);
+    if (isNaN(promedio1) == false && isNaN(promedio2) == false && isNaN(promedio3) == false) {
+        materia.promFinal = ((promedio1 + promedio2 + promedio3) / 3).toFixed(2);
+        if (materia.promFinal >= 6 && promedio3 >= 6) {
+            materia.stateMat = "Aprobada";
+        } else {
+            materia.stateMat = "Desaprobada";
+        }
+    } else {
+        materia.stateMat = "Sin promedio";
+        materia.promFinal = "Sin Terminar la cursada";
+    }
+}
 //Muestra una tabla con las notas del alumno de la materia del profesor
-function showNotesAlumno(alumno, maestro) {
-    const materia = alumno.materias.find((materia) => materia.nomMateria === maestro.materia);
+function showNotesAlumno(alumno, nombreMateria, funcionAnterior, persona) {
+    const materia = alumno.materias.find((materia) => materia.nomMateria === nombreMateria);
+    console.log(materia);
     let rowsNotas = getRow(materia.trimestres);
-    let arrayDatos = estadoMat(materia.trimestres);
-    materia.stateMat = arrayDatos[1];
     contain.innerHTML = `
-    <h1>Notas de ${alumno.name} ${alumno.apellido} de la materia de ${maestro.materia}</h1>
+    <h1>Notas de ${alumno.name} ${alumno.apellido} de la materia de ${nombreMateria}</h1>
             <div class="mb-3 tablaHide">
                 <table class="table">
                 <tr>
@@ -290,9 +318,9 @@ function showNotesAlumno(alumno, maestro) {
                     ${rowsNotas}
                     <tr>
                     <th>Estado de la materia</th>
-                    <td>${arrayDatos[1]}</td>
+                    <td>${materia.stateMat}</td>
                     <th>Promedio Final</th>
-                    <td>${arrayDatos[0]}</td>
+                    <td>${materia.promFinal}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -303,7 +331,7 @@ function showNotesAlumno(alumno, maestro) {
     //evento de retorno a la interfaz anterior
     const btnReturn = document.getElementById("btnReturn");
     btnReturn.onclick = () => {
-        showDateMaster(maestro)
+        funcionAnterior(persona)
     }
 }
 //funcion para crear las celdas con los datos
@@ -322,33 +350,6 @@ function getRow(trimestres) {
 
     return string;
 }
-//Funcion para ver estado de la materia
-// si saca 6 o mas esta aprobado.Si saca menos esta desaprobado . Si todos los trimestres no tienen sus notas y promedios no hay promedio final
-function estadoMat(trimestres) {
-    let promedio1 = parseInt(trimestres[0].promedio);
-    let promedio2 = parseInt(trimestres[1].promedio);
-    let promedio3 = parseInt(trimestres[2].promedio);
-    let arrayDato = [];
-    if (isNaN(promedio1) == false && isNaN(promedio2) == false && isNaN(promedio3) == false) {
-        let promedioFinal = (promedio1 + promedio2 + promedio3) / 3;
-        arrayDato[0] = promedioFinal.toFixed(2);
-        if (promedioFinal >= 6 && promedio3 >= 6) {
-            arrayDato[1] = "Aprobada";
-            return arrayDato;
-        } else {
-            arrayDato[1] = "Desaprobada";
-            return arrayDato;
-        }
-    } else {
-        arrayDato[0] = "Sin promedio";
-        arrayDato[1] = "Sin Terminar la cursada";
-        return arrayDato;
-    }
-}
-
-
-
-
 
 
 //Funcion para mostrar la interfaz al ingresar como alumno
@@ -364,6 +365,7 @@ function showDateAlumno(alumno) {
             </div>
     `
     //evento para return a logear
+    const btnReturn = document.getElementById("btnReturn")
     btnReturn.onclick = () => {
         showLogear();
     }
@@ -389,10 +391,8 @@ function btnVerNotaMateria(alumno) {
     const btnMaterias = document.querySelectorAll(".btnMaterias");
     btnMaterias.forEach((btn) => {
         btn.onclick = () => {
-            const nameMateria = alumno.materias.find((materia) => materia.nomMateria === btn.id);
-            console.log(alumno);
-            console.log(nameMateria);
-
+            const materia = alumno.materias.find((materia) => materia.nomMateria === btn.id);
+            showNotesAlumno(alumno, materia.nomMateria, showDateAlumno, alumno);
         }
     })
 }
