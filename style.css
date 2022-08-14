@@ -1,0 +1,29 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.divCont{
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 1px 1px 10px black;
+    margin: auto;
+}
+#alert{
+    color: red;
+}
+.row div {
+    width: 1fr;
+}
+.tablaHide{
+    overflow-x: scroll;
+}
+.table{
+    width: 100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.table tr th, .table tbody tr td{
+    border: 1px solid black;
+}
