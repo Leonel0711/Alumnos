@@ -194,7 +194,7 @@ function getAlumnos() {
 function getBtnVerAlu(maestro) {
     const btnEditNota = document.querySelectorAll(".btnEditNota");
     const btnVernota = document.querySelectorAll(".btnVerNota");
-    btnEditNota.forEach(btn => {
+    btnEditNota.forEach((btn,index) => {
         btn.onclick = () => {
             let arrayClasname = btn.className.split(" ");
             let index = parseInt(arrayClasname[3]);
